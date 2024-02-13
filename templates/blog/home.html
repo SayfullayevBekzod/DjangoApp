@@ -1,0 +1,30 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block body %}
+    <main role="main" class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="alert alert-{{ message.tags }}">
+                    <h6>Django messages might be shown here</h6>
+                </div>
+                {% for post in page_obj %}
+                    <article class="media content-section">
+                        <img class="rounded-circle article-img" src="{{ post.author.avatar.url }}">
+                        <div class="media-body">
+                            <div class="article-metadata">
+                                <a class="mr-2"
+                                   href="{% url 'blog:user-profile' post.author.username %}">{{ post.author.first_name }} {{ post.author.last_name }}</a>
+                                <small class="text-muted">{{ post.published }}</small>
+                            </div>
+                            <h5><a class="article-title"
+                                   href="{% url 'blog:post-detail' post.pk %}">{{ post.title }}</a></h5>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+            {% include 'blog/sidebar.html' %}
+        </div>
+        {% include 'blog/poginator.html' %}
+    </main>
+{% endblock %}
+
