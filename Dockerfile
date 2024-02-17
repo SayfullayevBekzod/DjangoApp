@@ -8,6 +8,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-COPY ./entrypoint.sh /app/
+COPY . /app
 
-ENTRYPOINT [ "sh", "entrypoint.sh" ]
+ENTRYPOINT [ "gunicorn", "entrypoint.sh" ]
