@@ -1,11 +1,11 @@
-{% extends 'blog/base.html' %}
+3{% extends 'blog/base.html' %}
 {% load static %}
 {% block body %}
     <main role="main" class="container">
         <div class="row">
             <div class="col-md-8">
                 <div class="alert alert-{{ message.tags }}">
-                    <h6>Django messages might be shown here</h6>
+                    <h6>{{ messages }}</h6>
                 </div>
                 {% for post in page_obj %}
                     <article class="media content-section">
