@@ -1,15 +1,13 @@
-FROM python:3.12
-WORKDIR / app
-
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
-
-RUN apt-get update
+FROM python:3.10-slim-bullseye
+WORKDIR /app
 
 RUN pip install --upgrade pip
+
 COPY ./requirements.txt /app/
 RUN pip install -r requirements.txt
 
-COPY . /app
+COPY . .
 
-ENTRYPOINT ["gunicorn", "core.wsgi"]
+COPY ./entrypoint.sh /app/
+
+ENTRYPOINT [ "sh", "entrypoint.sh" ]
