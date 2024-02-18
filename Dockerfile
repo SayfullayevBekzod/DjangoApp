@@ -1,25 +1,17 @@
-FROM python:3.9-slim as builder
+FROM python:3.10-slim
 
-WORKDIR /app
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+COPY . ./
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc
+# Install core dependencies.
+RUN apt-get update && apt-get install -y libpq-dev build-essential
 
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# Install production dependencies.
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-
-# final stage
-FROM python:3.9-slim
-
-COPY --from=builder /opt/venv /opt/venv
-
-WORKDIR /app
-
-ENV PATH="/opt/venv/bin:$PATH"
+CMD ["python", "-u", "main.py"]
