@@ -1,13 +1,25 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.9-slim as builder
+
 WORKDIR /app
 
-RUN pip install --upgrade pip
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-COPY ./requirements.txt /app/
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc
+
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY . .
 
-COPY . /app
+# final stage
+FROM python:3.9-slim
 
-ENTRYPOINT [ "gunicorn", "entrypoint.sh" ]
+COPY --from=builder /opt/venv /opt/venv
+
+WORKDIR /app
+
+ENV PATH="/opt/venv/bin:$PATH"
